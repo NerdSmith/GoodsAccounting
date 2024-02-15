@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field
 
-from src.models.BaseIDModel import BaseIDModel
+from .BaseIDModel import BaseIDModel
 
 
 class PlaceBase(SQLModel):
@@ -8,5 +8,5 @@ class PlaceBase(SQLModel):
     max_weight: float
 
 
-class PlaceDB(PlaceBase, BaseIDModel, table=True):
+class Place(PlaceBase, BaseIDModel, table=True):
     pass
