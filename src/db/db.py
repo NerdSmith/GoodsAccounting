@@ -23,6 +23,10 @@ async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_db() -> None:
+    from src.models.PlaceModel import Place  # noqa: F401
+    from src.models.ItemModel import Item  # noqa: F401
+    from src.models.UserModel import User  # noqa: F401
+
     async with async_engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
     await async_engine.dispose()
