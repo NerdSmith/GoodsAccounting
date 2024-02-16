@@ -3,7 +3,10 @@ from typing import Optional
 from sqlmodel import SQLModel, Field, Relationship
 
 from .BaseIDModel import BaseIDModel
-from .PlaceModel import Place
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .PlaceModel import Place
 
 
 class ItemBase(SQLModel):
@@ -13,4 +16,4 @@ class ItemBase(SQLModel):
 
 
 class Item(ItemBase, BaseIDModel, table=True):
-    place: Optional[Place] = Relationship(back_populates="items")
+    place: Optional["Place"] = Relationship(back_populates="items")
