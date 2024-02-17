@@ -10,4 +10,5 @@ class UserBase(SQLModel):
 
 
 class User(UserBase, BaseIDModel, table=True):
+    username: str = Field(unique=True)
     hashed_password: Optional[str] = Field(default=None, nullable=False, index=True)

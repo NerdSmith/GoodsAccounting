@@ -1,16 +1,21 @@
-from typing import Union
-
 from fastapi import Depends
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.db.db import get_async_session
-from src.models.UserModel import User, UserBase
-from src.repositories.CrudRepository import CrudRepository, CreateSchemaType, ModelType
+from src.models.UserModel import User
+from src.repositories.CrudRepository import CrudRepository
+from src.schemas.UserSchema import CreateUserSchema
+from src.utils.PasswordUtils import get_hashed_password
 
 
-class UserRepository(CrudRepository[User, UserBase, UserBase]):
+class UserRepository(CrudRepository[User, CreateUserSchema, User]):
     def __init__(self, db: AsyncSession = Depends(get_async_session)):
         super().__init__(User, db)
 
-    async def create(self, obj_in: Union[CreateSchemaType, ModelType]) -> ModelType:
-        raise NotImplementedError
+    async def create_with_password(self, obj_in: CreateUserSchema) -> User:
+        new_user = User(**obj_in.dict())
+        hashed_password = get_hashed_password(obj_in.password)
+        new_user.hashed_password = hashed_password
+        new_user = await self.create(new_user)
+
+        return new_user
