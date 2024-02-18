@@ -56,8 +56,8 @@ def verify_refresh(refresh_token: TokenSchemaRefresh) -> TokenPayload:
             )
     except (JWTError, ValidationError):
         raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Refresh token is incorrect",
-            )
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Refresh token is incorrect",
+        )
 
     return token_data

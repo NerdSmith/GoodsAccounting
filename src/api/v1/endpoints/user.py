@@ -6,7 +6,7 @@ from src.schemas.UserSchema import CreateUserSchema, OutUserSchema
 from src.services.UserService import UserService
 from src.utils.AuthUtils import get_current_user
 
-router = APIRouter(prefix="/user")
+router = APIRouter(prefix="/users")
 
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=OutUserSchema)
