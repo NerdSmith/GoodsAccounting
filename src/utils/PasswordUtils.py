@@ -2,8 +2,13 @@ import os
 from datetime import datetime, timedelta
 from typing import Any
 
-from jose import jwt
+from fastapi import HTTPException
+from jose import jwt, JWTError
 from passlib.context import CryptContext
+from pydantic import ValidationError
+from starlette import status
+
+from src.schemas.TokenSchema import TokenSchemaRefresh, TokenPayload
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 REFRESH_TOKEN_EXPIRE_MINUTES = 60 * 24 * 7
@@ -36,3 +41,23 @@ def create_access_token(subject: Any) -> str:
 
 def create_refresh_token(subject: Any) -> str:
     return create_payload(subject, REFRESH_TOKEN_EXPIRE_MINUTES, JWT_REFRESH_SECRET_KEY)
+
+
+def verify_refresh(refresh_token: TokenSchemaRefresh) -> TokenPayload:
+    try:
+        payload = jwt.decode(
+            refresh_token.refresh_token, JWT_REFRESH_SECRET_KEY, algorithms=[ALGORITHM]
+        )
+        token_data = TokenPayload(**payload)
+        if datetime.fromtimestamp(token_data.exp) < datetime.now():
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Refresh token is expired",
+            )
+    except (JWTError, ValidationError):
+        raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Refresh token is incorrect",
+            )
+
+    return token_data

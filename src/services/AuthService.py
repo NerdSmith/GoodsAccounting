@@ -1,12 +1,13 @@
 from fastapi import Depends, HTTPException
 from starlette import status
 
-from src.schemas.TokenSchema import TokenSchema
+from src.schemas.TokenSchema import TokenSchema, TokenSchemaRefresh, TokenSchemaAccess
 from src.repositories.UserRepository import UserRepository
 from src.utils.PasswordUtils import (
     verify_password,
     create_access_token,
     create_refresh_token,
+    verify_refresh,
 )
 
 
@@ -35,3 +36,11 @@ class AuthService:
         }
 
         return TokenSchema(**payload)
+
+    @staticmethod
+    async def get_access_by_refresh(
+        refresh_token: TokenSchemaRefresh,
+    ) -> TokenSchemaAccess:
+        token_data = verify_refresh(refresh_token)
+        payload = {"access_token": create_access_token(token_data.sub)}
+        return TokenSchemaAccess(**payload)
