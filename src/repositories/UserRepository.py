@@ -1,4 +1,7 @@
+from typing import Optional
+
 from fastapi import Depends
+from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.db.db import get_async_session
@@ -19,3 +22,8 @@ class UserRepository(CrudRepository[User, CreateUserSchema, User]):
         new_user = await self.create(new_user)
 
         return new_user
+
+    async def get_by_username(self, username: str) -> Optional[User]:
+        q = select(self.model).where(self.model.username == username)
+        response = await self.db.execute(q)
+        return response.scalar_one_or_none()
