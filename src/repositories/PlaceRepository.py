@@ -7,10 +7,5 @@ from src.repositories.CrudRepository import CrudRepository
 
 
 class PlaceRepository(CrudRepository[Place, PlaceBase, PlaceBase]):
-    def __init__(
-            self,
-            db: AsyncSession = Depends(get_async_session)
-    ):
+    def __init__(self, db: AsyncSession = Depends(get_async_session)):
         super().__init__(Place, db)
-
-
