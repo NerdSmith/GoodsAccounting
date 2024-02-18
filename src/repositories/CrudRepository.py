@@ -39,7 +39,7 @@ class CrudRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
             await self.db.rollback()
             raise HTTPException(
                 status_code=409,
-                detail="Resource already exists",
+                detail="Resource could not be created",
             )
         await self.db.refresh(db_obj)
         return db_obj
@@ -51,8 +51,15 @@ class CrudRepository(Generic[ModelType, CreateSchemaType, UpdateSchemaType]):
         for field in update_data:
             setattr(obj_current, field, update_data[field])
 
-        self.db.add(obj_current)
-        await self.db.commit()
+        try:
+            self.db.add(obj_current)
+            await self.db.commit()
+        except exc.IntegrityError:
+            await self.db.rollback()
+            raise HTTPException(
+                status_code=409,
+                detail="Resource could not be updated",
+            )
         await self.db.refresh(obj_current)
         return obj_current
 

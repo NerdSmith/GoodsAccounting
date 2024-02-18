@@ -34,8 +34,6 @@ async def update_place(
     return await place_service.update(place_id, new_place)
 
 
-@router.delete(
-    "/{place_id}", status_code=status.HTTP_204_NO_CONTENT, response_model=PlaceSchema
-)
+@router.delete("/{place_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_place(place_id: int, place_service: PlaceService = Depends()):
     return await place_service.delete(place_id)
