@@ -11,3 +11,7 @@ class PlaceSchemaCreate(PlaceBase):
 
 class PlaceSchemaUpdate(PlaceBase):
     pass
+
+
+class WeightedPlaceSchema(PlaceSchema):
+    current_weight: float = 0

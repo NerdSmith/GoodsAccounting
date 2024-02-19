@@ -15,4 +15,6 @@ class PlaceBase(SQLModel):
 
 
 class Place(PlaceBase, BaseIDModel, table=True):
-    items: List["Item"] = Relationship(back_populates="place")
+    items: List["Item"] = Relationship(
+        back_populates="place", sa_relationship_kwargs={"lazy": "selectin"}
+    )
