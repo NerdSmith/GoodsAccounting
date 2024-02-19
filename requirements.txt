@@ -15,9 +15,9 @@ click-plugins==1.1.1
 click-repl==0.3.0
 colorama==0.4.6
 cryptography==42.0.3
-dnspython==2.6.1
+dnspython==2.3.0
+eventlet==0.33.3
 ecdsa==0.18.0
-eventlet==0.35.1
 exceptiongroup==1.2.0
 fastapi==0.109.2
 flake8==7.0.0
