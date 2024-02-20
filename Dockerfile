@@ -35,6 +35,6 @@ RUN pip install --no-cache /wheels/*
 
 COPY . $APP_HOME
 
-RUN chmod a+x  $APP_HOME/entrypoint.prod.sh
+RUN chmod a+x  ./entrypoint.prod.sh
 
-ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
+ENTRYPOINT [ "/bin/bash", "/home/app/web/entrypoint.prod.sh" ]
