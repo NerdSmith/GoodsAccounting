@@ -11,7 +11,7 @@ class DataScanner:
     def get_filenames(self) -> List[str]:
         files = os.listdir(self.target_dir)
         filtered = filter(lambda f: f.endswith(".csv"), files)
-        return list(filtered)
+        return sorted(filtered, key=lambda fn: int(fn.split(".")[0]))
 
     def get_tables(self) -> List[str]:
         return list(map(lambda fn: fn.split(".")[1], self.get_filenames()))
