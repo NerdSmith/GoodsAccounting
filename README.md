@@ -47,13 +47,13 @@ GoodsAccounting  - корень
    ```
    ren ".env.prod.tmpl" ".env.prod"
    ren ".env.mq.prod.tmpl" ".env.mq.prod"
-   ren ".env.db.prod.tmpl" ".env.db.prod.tmpl"
+   ren ".env.db.prod.tmpl" ".env.db.prod"
    ```
    Linux:
    ```
    mv .env.prod.tmpl .env.prod
    mv .env.mq.prod.tmpl .env.mq.prod
-   mv .env.db.prod.tmpl .env.db.prod.tmpl
+   mv .env.db.prod.tmpl .env.db.prod
    ```
 5. Запустить docker-compose.yml
    ```
