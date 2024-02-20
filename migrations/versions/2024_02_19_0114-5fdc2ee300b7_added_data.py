@@ -13,6 +13,7 @@ import sqlmodel
 from sqlalchemy import MetaData, Table, insert
 from sqlalchemy.util.preloaded import orm
 
+from data.DataScanner import DataScanner
 from src.utils.PasswordUtils import get_hashed_password
 
 # revision identifiers, used by Alembic.
@@ -21,35 +22,20 @@ down_revision: Union[str, None] = '394a529f5fe7'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+data_scanner = DataScanner()
+
 
 def upgrade() -> None:
     connection = op.get_bind()
-    place_table = sa.Table('place', sa.MetaData(), autoload_with=connection)
-    item_table = sa.Table('item', sa.MetaData(), autoload_with=connection)
-    user_table = sa.Table('user', sa.MetaData(), autoload_with=connection)
 
-    op.bulk_insert(place_table, [
-        {"name": "Стол в 201", "max_weight": 20},
-        {"name": "Подоконник в коридоре", "max_weight": 10},
-        {"name": "Полка у шкафа в 110", "max_weight": 15},
-    ])
-
-    op.bulk_insert(item_table, [
-        {"name": "Пачка чая", "weight": 5, "place_id": 1},
-        {"name": "Коробка печенья", "weight": 10, "place_id": 2},
-        {"name": "Банка кофе", "weight": 3, "place_id": 3},
-    ])
-
-    op.bulk_insert(user_table, [
-        {"username": "user1", "hashed_password": get_hashed_password('Pa$$w0rd')},  # 4 test only
-        {"username": "user2", "hashed_password": get_hashed_password('Pa$$w0rd')},  # 4 test only
-    ])
+    for item in data_scanner.get_files_data():
+        table = sa.Table(item[0], sa.MetaData(), autoload_with=connection)  # type: ignore
+        op.bulk_insert(table, item[1])  # type: ignore
 
     # ### end Alembic commands ###
 
 
 def downgrade() -> None:
-    op.execute("DELETE FROM item WHERE id IN (1, 2, 3)")
-    op.execute("DELETE FROM place WHERE id IN (1, 2, 3)")
-    op.execute("DELETE FROM user WHERE id IN (1, 2)")
+    for table in reversed(data_scanner.get_tables()):
+        op.execute(f'TRUNCATE TABLE "{table}" CASCADE')
     # ### end Alembic commands ###
